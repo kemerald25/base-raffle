@@ -86,7 +86,7 @@ export default function MyTicketsPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {activeTickets.map(({ticket, raffle}) => (
+                                    {activeTickets.length > 0 ? activeTickets.map(({ticket, raffle}) => (
                                         <TableRow key={ticket.id}>
                                             <TableCell className="font-medium">{raffle?.name}</TableCell>
                                             <TableCell>{ticket.quantity}</TableCell>
@@ -97,10 +97,15 @@ export default function MyTicketsPage() {
                                                 </Link>
                                             </TableCell>
                                         </TableRow>
-                                    ))}
+                                    )) : (
+                                      <TableRow>
+                                          <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                                              You have no tickets in active raffles.
+                                          </TableCell>
+                                      </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
-                             {activeTickets.length === 0 && <p className="text-center text-muted-foreground py-8">You have no tickets in active raffles.</p>}
                         </CardContent>
                     </Card>
                 </TabsContent>
@@ -117,7 +122,7 @@ export default function MyTicketsPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                     {pastTickets.map(({ticket, raffle}) => {
+                                     {pastTickets.length > 0 ? pastTickets.map(({ticket, raffle}) => {
                                         const isWinner = raffle?.winner_address === user.address;
                                         return (
                                             <TableRow key={ticket.id}>
@@ -137,10 +142,15 @@ export default function MyTicketsPage() {
                                                 </TableCell>
                                             </TableRow>
                                         )
-                                     })}
+                                     }) : (
+                                      <TableRow>
+                                          <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                                              No past raffles to show.
+                                          </TableCell>
+                                      </TableRow>
+                                     )}
                                 </TableBody>
                             </Table>
-                            {pastTickets.length === 0 && <p className="text-center text-muted-foreground py-8">No past raffles to show.</p>}
                         </CardContent>
                     </Card>
                 </TabsContent>
