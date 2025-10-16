@@ -1,6 +1,5 @@
 import type {Metadata} from 'next';
 import './globals.css';
-import '@coinbase/onchainkit/styles.css';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
