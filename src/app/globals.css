@@ -1,7 +1,7 @@
+@import '@coinbase/onchainkit/styles.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import '@coinbase/onchainkit/styles.css';
 
 @layer base {
   :root {
