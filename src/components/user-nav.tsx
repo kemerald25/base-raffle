@@ -26,7 +26,10 @@ interface UserNavProps {
 }
 
 export function UserNav({ user, onDisconnect }: UserNavProps) {
-  const userInitial = user.address.slice(2, 4).toUpperCase();
+  // In a real app, these would come from your wallet connection/backend
+  const mainBalance = 0;
+  const subAccountBalance = 0;
+  const userInitial = user.address ? user.address.slice(2, 4).toUpperCase() : '...';
 
   return (
     <DropdownMenu>
@@ -50,8 +53,8 @@ export function UserNav({ user, onDisconnect }: UserNavProps) {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <div className="px-2 py-1.5">
-             <BalanceDisplay label="Main Account" balance={1.2345} />
-             <BalanceDisplay label="Sub Account" balance={0.5678} isSubAccount />
+             <BalanceDisplay label="Main Account" balance={mainBalance} />
+             <BalanceDisplay label="Sub Account" balance={subAccountBalance} isSubAccount />
           </div>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

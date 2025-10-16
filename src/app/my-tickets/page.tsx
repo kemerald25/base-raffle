@@ -1,5 +1,3 @@
-import { getUserById, getTicketsByUser, getRaffles } from "@/lib/data"
-import { notFound } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,28 +5,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { ArrowRight } from "lucide-react";
+import type { User, Ticket, Raffle } from "@/lib/types";
 
 export default function MyTicketsPage() {
-    // Using a mock user, in a real app this would come from the connected wallet
-    const user = getUserById('0x1234567890123456789012345678901234567890');
+    // In a real app this would come from the connected wallet
+    const user: User | undefined = undefined;
 
     if (!user) {
-        notFound();
+        return (
+            <div className="container mx-auto px-4 md:px-6 py-12 text-center">
+                 <h1 className="text-3xl font-bold font-headline mb-4">My Profile</h1>
+                 <p className="text-muted-foreground">Please connect your wallet to view your tickets and profile.</p>
+            </div>
+        )
     }
     
-    const allRaffles = getRaffles();
-    const userTickets = getTicketsByUser(user.address);
-    const winRate = user.total_tickets_purchased > 0 ? ((user.total_won > 0 ? 1 : 0) / user.total_tickets_purchased) * 100 : 0;
+    const allRaffles: Raffle[] = [];
+    const userTickets: Ticket[] = [];
     
     const activeTickets = userTickets.map(ticket => {
         const raffle = allRaffles.find(r => r.id === ticket.raffle_id);
-        return { ...ticket, raffle };
+        return { ticket, raffle };
     }).filter(t => t.raffle?.status === 'active');
     
     const pastTickets = userTickets.map(ticket => {
         const raffle = allRaffles.find(r => r.id === ticket.raffle_id);
-        return { ...ticket, raffle };
+        return { ticket, raffle };
     }).filter(t => t.raffle?.status !== 'active');
+
+    const wins = pastTickets.filter(t => t.raffle?.status === 'drawn' && t.raffle.winner_address === user.address).length;
+    const losses = pastTickets.filter(t => t.raffle?.status === 'drawn' && t.raffle.winner_address !== user.address).length;
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
@@ -58,7 +64,7 @@ export default function MyTicketsPage() {
                 </Card>
                 <Card>
                     <CardHeader><CardTitle>Win/Loss Record</CardTitle></CardHeader>
-                    <CardContent><p className="text-3xl font-bold">1W / {userTickets.length-1}L</p></CardContent>
+                    <CardContent><p className="text-3xl font-bold">{wins}W / {losses}L</p></CardContent>
                 </Card>
             </div>
 

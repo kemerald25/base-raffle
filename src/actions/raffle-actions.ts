@@ -14,9 +14,9 @@ export async function purchaseTicketAction(prevState: FormState, formData: FormD
   const ticketPrice = Number(formData.get('ticketPrice'));
   const totalCost = quantity * ticketPrice;
 
-  // Mock sub-account balance and spending limit
-  const walletBalance = 0.5678; // ETH
-  const spendingLimit = 1; // ETH
+  // In a real app, you would get this from the connected user's wallet
+  const walletBalance = 0; // ETH
+  const spendingLimit = 0; // ETH
 
   try {
     // Simulate checking if the sub-account has enough balance

@@ -1,13 +1,13 @@
-import { getLeaderboardByWins, getLeaderboardByTickets } from "@/lib/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trophy, Ticket } from "lucide-react";
+import { User } from "@/lib/types";
 
 export default function LeaderboardPage() {
-    const topWinners = getLeaderboardByWins();
-    const topPlayers = getLeaderboardByTickets();
+    const topWinners: User[] = [];
+    const topPlayers: User[] = [];
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
@@ -38,7 +38,7 @@ export default function LeaderboardPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {topWinners.map((user, index) => (
+                                    {topWinners.length > 0 ? topWinners.map((user, index) => (
                                         <TableRow key={user.address}>
                                             <TableCell className="font-bold text-lg">{index + 1}</TableCell>
                                             <TableCell>
@@ -54,7 +54,13 @@ export default function LeaderboardPage() {
                                                 {user.total_won.toLocaleString('en-US', { style: 'currency', currency: 'ETH' })}
                                             </TableCell>
                                         </TableRow>
-                                    ))}
+                                    )) : (
+                                        <TableRow>
+                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
+                                                No winners yet. Be the first!
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                         </CardContent>
@@ -75,7 +81,7 @@ export default function LeaderboardPage() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {topPlayers.map((user, index) => (
+                                    {topPlayers.length > 0 ? topPlayers.map((user, index) => (
                                         <TableRow key={user.address}>
                                             <TableCell className="font-bold text-lg">{index + 1}</TableCell>
                                             <TableCell>
@@ -91,7 +97,13 @@ export default function LeaderboardPage() {
                                                 {user.total_tickets_purchased}
                                             </TableCell>
                                         </TableRow>
-                                    ))}
+                                    )) : (
+                                         <TableRow>
+                                            <TableCell colSpan={3} className="text-center text-muted-foreground py-8">
+                                                No players yet. Join a raffle!
+                                            </TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                         </CardContent>

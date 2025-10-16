@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { getRaffleById, getParticipantsByRaffle } from '@/lib/data';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CountdownTimer } from '@/components/countdown-timer';
@@ -8,16 +7,21 @@ import { TicketPurchaseForm } from './ticket-purchase-form';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Trophy, Users, Ticket as TicketIcon } from 'lucide-react';
+import type { Raffle, Participant } from '@/lib/types';
 
 export default function RaffleDetailPage({ params }: { params: { id: string } }) {
   const raffleId = parseInt(params.id, 10);
-  const raffle = getRaffleById(raffleId);
+  
+  // In a real app, you would fetch this data from an API or blockchain
+  const raffle: Raffle | undefined = undefined; 
   
   if (!raffle) {
+    // Return a loading state or a not found page if the raffle isn't loaded yet.
+    // For now, we'll use notFound(), but you might want a skeleton loader here.
     notFound();
   }
 
-  const participants = getParticipantsByRaffle(raffleId);
+  const participants: Participant[] = [];
   const progress = (raffle.total_tickets_sold / raffle.max_tickets) * 100;
 
   return (
@@ -57,7 +61,7 @@ export default function RaffleDetailPage({ params }: { params: { id: string } })
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {participants.map(p => (
+                  {participants.length > 0 ? participants.map(p => (
                     <TableRow key={p.user_address}>
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -70,7 +74,13 @@ export default function RaffleDetailPage({ params }: { params: { id: string } })
                       </TableCell>
                       <TableCell className="text-right font-mono">{p.quantity}</TableCell>
                     </TableRow>
-                  ))}
+                  )) : (
+                    <TableRow>
+                        <TableCell colSpan={2} className="text-center text-muted-foreground py-8">
+                            No participants yet. Be the first to join!
+                        </TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>

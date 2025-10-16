@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Button } from './ui/button';
 import { UserNav } from './user-nav';
-import { getUserById } from '@/lib/data';
 import type { User } from '@/lib/types';
 import { Wallet } from 'lucide-react';
 
@@ -13,20 +12,29 @@ export function ConnectWallet() {
 
   useEffect(() => {
     // In a real app, you'd check a wallet provider's state
-    // For this mock, we'll just set a default user when "connected"
+    // and fetch user data from an API or blockchain.
     if (isConnected) {
-      const mockUser = getUserById('0x1234567890123456789012345678901234567890');
-      setUser(mockUser || null);
+      // Replace with actual user data fetching logic
+      const fetchedUser: User = { 
+        address: '0x...',
+        avatar_url: '',
+        total_spent: 0,
+        total_tickets_purchased: 0,
+        total_won: 0,
+      };
+      setUser(fetchedUser);
     } else {
       setUser(null);
     }
   }, [isConnected]);
   
   const handleConnect = () => {
+    // Replace with your wallet connection logic (e.g., RainbowKit, WalletConnect)
     setIsConnected(true);
   };
   
   const handleDisconnect = () => {
+    // Replace with your wallet disconnection logic
     setIsConnected(false);
   };
 

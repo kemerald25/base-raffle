@@ -4,16 +4,16 @@ import { ArrowRight, Ticket, Trophy, Users } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { getActiveRaffles, getRecentWinners, getTotalPrizesWon } from '@/lib/data';
 import { RaffleCard } from '@/components/raffle-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, formatDistanceToNow } from 'date-fns';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import type { Raffle, Winner } from '@/lib/types';
 
 export default function Home() {
-  const activeRaffles = getActiveRaffles().slice(0, 3);
-  const totalPrizesWon = getTotalPrizesWon();
-  const recentWinners = getRecentWinners().slice(0, 5);
+  const activeRaffles: Raffle[] = [];
+  const totalPrizesWon = 0;
+  const recentWinners: Winner[] = [];
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image');
 
   return (
@@ -129,32 +129,36 @@ export default function Home() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ul className="space-y-4">
-                  {recentWinners.map((winner) => (
-                    <li key={winner.id} className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10">
-                           <AvatarImage src={winner.user.avatar_url} alt={winner.user.address} />
-                           <AvatarFallback>{winner.user.address.slice(2, 4).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="font-semibold truncate">{`${winner.user.address.slice(0, 6)}...${winner.user.address.slice(-4)}`}</p>
+                {recentWinners.length > 0 ? (
+                  <ul className="space-y-4">
+                    {recentWinners.map((winner) => (
+                      <li key={winner.id} className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={winner.user.avatar_url} alt={winner.user.address} />
+                            <AvatarFallback>{winner.user.address.slice(2, 4).toUpperCase()}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <p className="font-semibold truncate">{`${winner.user.address.slice(0, 6)}...${winner.user.address.slice(-4)}`}</p>
+                            <p className="text-sm text-muted-foreground">
+                              Won in Raffle #{winner.raffle_id} &bull; {formatDistanceToNow(new Date(winner.won_at), { addSuffix: true })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-bold text-lg text-green-500">
+                            {winner.prize_amount.toLocaleString('en-US', { style: 'currency', currency: 'ETH' })}
+                          </p>
                           <p className="text-sm text-muted-foreground">
-                            Won in Raffle #{winner.raffle_id} &bull; {formatDistanceToNow(new Date(winner.won_at), { addSuffix: true })}
+                            {format(new Date(winner.won_at), 'MMM d, yyyy')}
                           </p>
                         </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-lg text-green-500">
-                          {winner.prize_amount.toLocaleString('en-US', { style: 'currency', currency: 'ETH' })}
-                        </p>
-                         <p className="text-sm text-muted-foreground">
-                           {format(new Date(winner.won_at), 'MMM d, yyyy')}
-                         </p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-center text-muted-foreground py-8">No recent winners.</p>
+                )}
               </CardContent>
             </Card>
             <Card className="flex flex-col items-center justify-center text-center bg-primary text-primary-foreground">

@@ -1,9 +1,9 @@
-import { getActiveRaffles } from "@/lib/data"
 import { RaffleCard } from "@/components/raffle-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { Raffle } from "@/lib/types";
 
 export default function RafflesPage() {
-  const raffles = getActiveRaffles();
+  const raffles: Raffle[] = [];
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
