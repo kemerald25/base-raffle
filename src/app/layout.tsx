@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Toaster } from "@/components/ui/toaster"
-import { WalletKitContext, walletKit } from '@/lib/walletkit';
+import { WalletKitProvider } from '@/lib/walletkit.tsx';
 
 export const metadata: Metadata = {
   title: 'Base Raffle - Onchain Raffle DApp',
@@ -24,12 +24,12 @@ export default function RootLayout({
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className={cn("font-body antialiased min-h-screen flex flex-col")}>
-        <WalletKitContext.Provider value={walletKit}>
+        <WalletKitProvider>
           <Header />
           <main className="flex-grow">{children}</main>
           <Footer />
           <Toaster />
-        </WalletKitContext.Provider>
+        </WalletKitProvider>
       </body>
     </html>
   );

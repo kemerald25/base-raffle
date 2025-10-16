@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { UserNav } from './user-nav';
 import type { User } from '@/lib/types';
 import { Wallet } from 'lucide-react';
-import { useWalletKit } from '@/lib/walletkit';
+import { useWalletKit } from '@/lib/walletkit.tsx';
 import { SessionTypes } from '@walletconnect/types';
 
 export function ConnectWallet() {
