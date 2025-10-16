@@ -14,29 +14,29 @@ export function ConnectWallet() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    if (walletKit.signClient) {
-      const activeSessions = walletKit.signClient.session.values;
-      setSessions(activeSessions);
+    if (!walletKit.signClient) return;
+    
+    const onSessionUpdate = () => {
+      setSessions([...walletKit.signClient.session.values]);
+    };
 
-      const handleSessionUpdate = () => {
-        setSessions([...walletKit.signClient.session.values]);
-      };
+    walletKit.signClient.on('session_update', onSessionUpdate);
+    walletKit.signClient.on('session_delete', onSessionUpdate);
+    
+    // Initial check
+    onSessionUpdate();
 
-      walletKit.signClient.on('session_update', handleSessionUpdate);
-      walletKit.signClient.on('session_delete', handleSessionUpdate);
-      
-      return () => {
-        walletKit.signClient.off('session_update', handleSessionUpdate);
-        walletKit.signClient.off('session_delete', handleSessionUpdate);
-      }
-    }
+    return () => {
+      walletKit.signClient.off('session_update', onSessionUpdate);
+      walletKit.signClient.off('session_delete', onSessionUpdate);
+    };
   }, [walletKit.signClient]);
 
   useEffect(() => {
     if (sessions.length > 0) {
       const mainAccount = sessions[0].namespaces.eip155.accounts[0];
       const address = mainAccount.split(':').pop() || '';
-      const fetchedUser: User = { 
+      const fetchedUser: User = {
         address: address,
         avatar_url: `https://effigy.im/a/${address}.svg`,
         total_spent: 0,
@@ -48,30 +48,27 @@ export function ConnectWallet() {
       setUser(null);
     }
   }, [sessions]);
-  
-  const handleConnect = async () => {
-    // This is where you would handle the connection logic,
-    // typically by pairing with a URI from a dApp.
-    // Since there's no URI source, we'll leave this empty.
-    console.log("Connect button clicked. Awaiting dApp URI for pairing.");
-  };
-  
+
   const handleDisconnect = async () => {
-    if (sessions[0]) {
+    if (sessions.length > 0 && walletKit.signClient) {
+      try {
         await walletKit.disconnectSession({
-            topic: sessions[0].topic,
-            reason: { code: 6000, message: 'User disconnected' },
+          topic: sessions[0].topic,
+          reason: { code: 6000, message: 'User disconnected' },
         });
-        setSessions([]);
+      } catch (error) {
+        console.error('Failed to disconnect session:', error);
+      }
     }
   };
 
-  if (sessions.length > 0 && user) {
+  if (user && sessions.length > 0) {
     return <UserNav user={user} onDisconnect={handleDisconnect} sessions={sessions} />;
   }
 
+  // The button is now for display purposes, as connection is handled by dApp redirection.
   return (
-    <Button onClick={handleConnect} className="w-full md:w-auto">
+    <Button disabled className="w-full md:w-auto">
       <Wallet className="mr-2 h-4 w-4" />
       Connect Wallet
     </Button>
