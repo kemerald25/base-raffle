@@ -68,7 +68,7 @@ export function ConnectWallet() {
 
   // The button is now for display purposes, as connection is handled by dApp redirection.
   return (
-    <Button disabled className="w-full md:w-auto">
+    <Button className="w-full md:w-auto">
       <Wallet className="mr-2 h-4 w-4" />
       Connect Wallet
     </Button>
