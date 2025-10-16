@@ -1,3 +1,52 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-image",
+      "description": "Abstract network of glowing nodes",
+      "imageUrl": "https://picsum.photos/seed/1000/1200/600",
+      "imageHint": "abstract network"
+    },
+    {
+      "id": "raffle-1",
+      "description": "A futuristic glowing crystal",
+      "imageUrl": "https://picsum.photos/seed/101/600/400",
+      "imageHint": "glowing crystal"
+    },
+    {
+      "id": "raffle-2",
+      "description": "A pile of gold coins",
+      "imageUrl": "https://picsum.photos/seed/102/600/400",
+      "imageHint": "gold coins"
+    },
+    {
+      "id": "raffle-3",
+      "description": "A sleek modern sports car",
+      "imageUrl": "https://picsum.photos/seed/103/600/400",
+      "imageHint": "sports car"
+    },
+    {
+      "id": "raffle-4",
+      "description": "A digital art collage",
+      "imageUrl": "https://picsum.photos/seed/104/600/400",
+      "imageHint": "digital art"
+    },
+    {
+      "id": "raffle-5",
+      "description": "A serene beach at sunset",
+      "imageUrl": "https://picsum.photos/seed/105/600/400",
+      "imageHint": "beach sunset"
+    },
+    {
+      "id": "raffle-6",
+      "description": "A stack of rare trading cards",
+      "imageUrl": "https://picsum.photos/seed/106/600/400",
+      "imageHint": "trading cards"
+    },
+    {
+      "id": "raffle-7",
+      "description": "A luxury watch",
+      "imageUrl": "https://picsum.photos/seed/107/600/400",
+      "imageHint": "luxury watch"
+    }
+  ]
 }
