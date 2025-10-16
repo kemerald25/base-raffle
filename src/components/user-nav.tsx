@@ -19,27 +19,19 @@ import {
 import type { User } from '@/lib/types';
 import { BalanceDisplay } from './balance-display';
 import { Ticket, LogOut } from 'lucide-react';
-import { SessionTypes } from '@walletconnect/types';
+import { useDisconnect } from 'wagmi';
 
 interface UserNavProps {
   user: User;
-  onDisconnect: () => void;
-  sessions: SessionTypes.Struct[];
 }
 
-export function UserNav({ user, onDisconnect, sessions }: UserNavProps) {
+export function UserNav({ user }: UserNavProps) {
+  const { disconnect } = useDisconnect();
+
   // In a real app, these would come from your wallet connection/backend
   const mainBalance = 0;
   const subAccountBalance = 0;
   const userInitial = user.address ? user.address.slice(2, 4).toUpperCase() : '...';
-
-  const getAccountsForChain = (chainId: string) => {
-    const namespace = sessions[0]?.namespaces?.eip155;
-    if (!namespace) return [];
-    return namespace.accounts
-      .filter(acc => acc.startsWith(chainId))
-      .map(acc => acc.split(':').pop());
-  }
 
   return (
     <DropdownMenu>
@@ -74,7 +66,7 @@ export function UserNav({ user, onDisconnect, sessions }: UserNavProps) {
             <span>My Tickets</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={onDisconnect}>
+        <DropdownMenuItem onClick={() => disconnect()}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>Log out</span>
         </DropdownMenuItem>
