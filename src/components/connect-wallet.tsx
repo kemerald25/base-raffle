@@ -50,19 +50,10 @@ export function ConnectWallet() {
   }, [sessions]);
   
   const handleConnect = async () => {
-    // In a real implementation, you would get the URI from a QR code
-    // scanner or a dApp connection prompt.
-    const uri = prompt("Enter WalletConnect URI");
-    if (uri) {
-      try {
-        await walletKit.pair({ uri });
-        console.log("Pairing initiated...");
-      } catch (error) {
-        console.error("Failed to pair:", error);
-      }
-    } else {
-      console.log("No URI provided.");
-    }
+    // This is where you would handle the connection logic,
+    // typically by pairing with a URI from a dApp.
+    // Since there's no URI source, we'll leave this empty.
+    console.log("Connect button clicked. Awaiting dApp URI for pairing.");
   };
   
   const handleDisconnect = async () => {
