@@ -14,17 +14,28 @@ export function ConnectWallet() {
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const activeSessions = walletKit.getActiveSessions();
-    setSessions(Object.values(activeSessions));
-  }, [walletKit]);
+    if (walletKit.signClient) {
+      const activeSessions = walletKit.signClient.session.values;
+      setSessions(activeSessions);
+
+      const handleSessionUpdate = () => {
+        setSessions([...walletKit.signClient.session.values]);
+      };
+
+      walletKit.signClient.on('session_update', handleSessionUpdate);
+      walletKit.signClient.on('session_delete', handleSessionUpdate);
+      
+      return () => {
+        walletKit.signClient.off('session_update', handleSessionUpdate);
+        walletKit.signClient.off('session_delete', handleSessionUpdate);
+      }
+    }
+  }, [walletKit.signClient]);
 
   useEffect(() => {
-    // In a real app, you'd check a wallet provider's state
-    // and fetch user data from an API or blockchain.
     if (sessions.length > 0) {
       const mainAccount = sessions[0].namespaces.eip155.accounts[0];
       const address = mainAccount.split(':').pop() || '';
-      // Replace with actual user data fetching logic
       const fetchedUser: User = { 
         address: address,
         avatar_url: `https://effigy.im/a/${address}.svg`,
@@ -39,9 +50,6 @@ export function ConnectWallet() {
   }, [sessions]);
   
   const handleConnect = async () => {
-    // For demo purposes, we will just open a new tab to the wallet.
-    // In a real app, you would use walletKit.pair({ uri }) after getting uri from a dApp
-    // For now we will just simulate a connection for the UI
     window.open(window.location.origin, '_blank');
   };
   
