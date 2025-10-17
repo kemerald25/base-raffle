@@ -10,6 +10,7 @@ import { Loader2, Minus, Plus, Ticket } from 'lucide-react';
 import { useAccount } from 'wagmi';
 import { encodeFunctionData, parseEther } from 'viem';
 import { contractAddress, contractAbi as RaffleABI } from '@/lib/contract';
+import { baseSepolia } from 'viem/chains';
 
 interface TicketPurchaseFormProps {
     raffle: Raffle;
@@ -55,7 +56,6 @@ export function TicketPurchaseForm({ raffle }: TicketPurchaseFormProps) {
         const response = await provider.request({
           method: 'wallet_getSubAccounts',
           params: [{
-            version: '1',
             account: address,
             domain: typeof window !== 'undefined' ? window.location.origin : undefined,
           }]
@@ -65,7 +65,7 @@ export function TicketPurchaseForm({ raffle }: TicketPurchaseFormProps) {
         if (response?.subAccounts && response.subAccounts.length > 0) {
           const existingSubAccount = response.subAccounts[0];
           setSubAccountAddress(existingSubAccount.address);
-          console.log('Sub account found:', existingSubAccount.address);
+          // console.log('Sub account found:', existingSubAccount.address);
         } else {
           setSubAccountAddress('');
         }
@@ -141,17 +141,26 @@ export function TicketPurchaseForm({ raffle }: TicketPurchaseFormProps) {
       console.log('Value:', valueInWei.toString());
 
       // Use wallet_sendCalls (EIP-5792) for sub account transactions
+      // Version 2.0 is REQUIRED for Auto Spend Permissions to work properly
       const txHash = await provider.request({
         method: 'wallet_sendCalls',
         params: [{
-          version: '1.0',
-          chainId: `0x${(84532).toString(16)}`, // Base Sepolia chain ID in hex
+          version: '2.0', // CRITICAL: Must be 2.0 for Auto Spend Permissions
+          chainId: `0x${baseSepolia.id.toString(16)}`, // Base Sepolia chain ID in hex
+          atomicRequired: true, // Ensures all calls succeed or fail together
           from: subAccountAddress,
           calls: [{
             to: contractAddress,
             data: data,
             value: `0x${valueInWei.toString(16)}`, // Convert to hex string
-          }]
+          }],
+          // Optional: Add capabilities for paymaster support
+          capabilities: {
+            // Uncomment and add your paymaster URL for sponsored gas
+            // paymasterService: {
+            //   url: 'https://api.developer.coinbase.com/rpc/v1/base-sepolia/YOUR_API_KEY'
+            // }
+          }
         }]
       });
 
@@ -175,21 +184,26 @@ export function TicketPurchaseForm({ raffle }: TicketPurchaseFormProps) {
       console.error('Transaction error:', error);
       
       let errorMessage = 'Failed to purchase tickets. ';
+      let errorTitle = 'Purchase Failed';
       
       if (error?.code === 4001) {
-        errorMessage += 'Transaction was rejected.';
+        errorMessage = 'You rejected the transaction.';
+        errorTitle = 'Transaction Rejected';
       } else if (error?.code === -32602) {
-        errorMessage += 'Invalid transaction parameters.';
+        errorMessage = 'Invalid transaction parameters. Please try again.';
       } else if (error?.code === -32603) {
-        errorMessage += 'Internal error. Please try again.';
+        errorMessage = 'Internal error. Please try again or contact support.';
+      } else if (error?.code === -32090 || error?.message?.includes('balance')) {
+        errorMessage = 'Insufficient balance. When you confirm the transaction, you\'ll be prompted to transfer funds from your main Base Account.';
+        errorTitle = 'Insufficient Balance';
       } else if (error?.message) {
-        errorMessage += error.message;
+        errorMessage = error.message;
       } else {
-        errorMessage += 'Please try again.';
+        errorMessage = 'An unexpected error occurred. Please try again.';
       }
       
       toast({
-        title: 'Purchase Failed',
+        title: errorTitle,
         description: errorMessage,
         variant: 'destructive',
       });
