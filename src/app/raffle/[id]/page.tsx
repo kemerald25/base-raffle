@@ -1,8 +1,8 @@
-
 "use client";
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { use } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { CountdownTimer } from '@/components/countdown-timer';
@@ -14,8 +14,10 @@ import type { Participant } from '@/lib/types';
 import { useRaffle } from '@/hooks/use-raffle';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function RaffleDetailPage({ params }: { params: { id: string } }) {
-  const raffleId = parseInt(params.id, 10);
+export default function RaffleDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Unwrap the params Promise using React.use()
+  const { id } = use(params);
+  const raffleId = parseInt(id, 10);
   const { raffle, isLoading, isError } = useRaffle(raffleId);
 
   if (isLoading) {
