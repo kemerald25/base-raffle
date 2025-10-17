@@ -1,3 +1,6 @@
+
+"use client";
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,17 +10,30 @@ import { TicketPurchaseForm } from './ticket-purchase-form';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Trophy, Users, Ticket as TicketIcon } from 'lucide-react';
-import type { Raffle, Participant } from '@/lib/types';
+import type { Participant } from '@/lib/types';
+import { useRaffle } from '@/hooks/use-raffle';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function RaffleDetailPage({ params }: { params: { id: string } }) {
   const raffleId = parseInt(params.id, 10);
+  const { raffle, isLoading, isError } = useRaffle(raffleId);
+
+  if (isLoading) {
+    return (
+        <div className="container mx-auto px-4 md:px-6 py-12">
+            <div className="grid lg:grid-cols-5 gap-8">
+                <div className="lg:col-span-3">
+                    <Skeleton className="h-[600px] w-full" />
+                </div>
+                <div className="lg:col-span-2">
+                    <Skeleton className="h-[600px] w-full" />
+                </div>
+            </div>
+      </div>
+    )
+  }
   
-  // In a real app, you would fetch this data from an API or blockchain
-  const raffle: Raffle | undefined = undefined; 
-  
-  if (!raffle) {
-    // Return a loading state or a not found page if the raffle isn't loaded yet.
-    // For now, we'll use notFound(), but you might want a skeleton loader here.
+  if (isError || !raffle) {
     notFound();
   }
 
