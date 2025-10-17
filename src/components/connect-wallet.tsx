@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useAccount, useConnect, useDisconnect, useBalance } from 'wagmi';
@@ -25,12 +26,12 @@ export function ConnectWallet() {
 
   const [showSubAccountModal, setShowSubAccountModal] = useState(false);
 
-  // In a real app, this would be fetched
+  // This will be replaced with real sub-account data later
   const subAccount = {
     address: "0xSubAccountAddress...1234",
-    balance: 0.5
+    balance: 0
   };
-  const hasSubAccount = true;
+  const hasSubAccount = false;
 
 
   if (isConnected) {
@@ -45,9 +46,9 @@ export function ConnectWallet() {
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="flex items-center gap-2">
               <Avatar className="h-6 w-6">
-                <AvatarFallback>{address.slice(2, 4).toUpperCase()}</AvatarFallback>
+                <AvatarFallback>{address ? address.slice(2, 4).toUpperCase() : '?'}</AvatarFallback>
               </Avatar>
-              <span className="truncate max-w-[100px]">{`${address.slice(0, 6)}...${address.slice(-4)}`}</span>
+              <span className="truncate max-w-[100px]">{address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Not Connected'}</span>
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
