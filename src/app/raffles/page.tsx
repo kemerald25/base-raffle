@@ -1,9 +1,13 @@
+
+'use client'
+
 import { RaffleCard } from "@/components/raffle-card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { Raffle } from "@/lib/types";
+import { useActiveRaffles } from "@/hooks/use-raffles";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function RafflesPage() {
-  const raffles: Raffle[] = [];
+  const { raffles, isLoading } = useActiveRaffles();
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12">
@@ -27,7 +31,14 @@ export default function RafflesPage() {
         </div>
       </div>
       
-      {raffles.length > 0 ? (
+      {isLoading ? (
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <Skeleton className="h-[480px] w-full" />
+            <Skeleton className="h-[480px] w-full" />
+            <Skeleton className="h-[480px] w-full" />
+            <Skeleton className="h-[480px] w-full" />
+        </div>
+      ) : raffles.length > 0 ? (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {raffles.map((raffle) => (
             <RaffleCard key={raffle.id} raffle={raffle} />

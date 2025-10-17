@@ -1,3 +1,6 @@
+
+'use client'
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Ticket, Trophy, Users } from 'lucide-react';
@@ -8,10 +11,12 @@ import { RaffleCard } from '@/components/raffle-card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { format, formatDistanceToNow } from 'date-fns';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import type { Raffle, Winner } from '@/lib/types';
+import type { Winner } from '@/lib/types';
+import { useActiveRaffles } from '@/hooks/use-raffles';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  const activeRaffles: Raffle[] = [];
+  const { raffles: activeRaffles, isLoading } = useActiveRaffles();
   const totalPrizesWon = 0;
   const recentWinners: Winner[] = [];
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image');
@@ -57,9 +62,15 @@ export default function Home() {
               Your chance to win big is just a click away. No transaction pop-ups, just pure excitement.
             </p>
           </div>
-          {activeRaffles.length > 0 ? (
+          {isLoading ? (
+             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <Skeleton className="h-[480px] w-full" />
+                <Skeleton className="h-[480px] w-full" />
+                <Skeleton className="h-[480px] w-full" />
+             </div>
+          ) : activeRaffles.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {activeRaffles.map((raffle) => (
+              {activeRaffles.slice(0, 3).map((raffle) => (
                 <RaffleCard key={raffle.id} raffle={raffle} />
               ))}
             </div>

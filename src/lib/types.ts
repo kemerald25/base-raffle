@@ -9,9 +9,10 @@ export interface Raffle {
   max_tickets: number;
   prize_pool: number;
   winner_address?: string;
-  status: 'active' | 'ended' | 'drawn';
+  status: 'active' | 'ended' | 'drawn' | 'cancelled';
   image_url: string;
   image_hint: string;
+  createdAt: number;
 }
 
 export interface Ticket {
